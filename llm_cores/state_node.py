@@ -14,6 +14,11 @@ class StateNode:
         # Calculate depth (time) implicitly
         self.time_step = (parent.time_step + 1) if parent else 0
 
+    @property
+    def key(self) -> tuple[int, int]:
+        """The unique composite key for this node."""
+        return (self.prompt_index, self.time_step)
+
     def __repr__(self):
         if self.parent is None:
             return f"P{self.prompt_index}|t={self.time_step}:Clean"

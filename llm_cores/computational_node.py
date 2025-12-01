@@ -45,11 +45,19 @@ class ActivationRef(ComputationalNode):
 
         self._runtime_cache: Optional[torch.Tensor] = None
 
+    @property
+    def key(self) -> tuple[int, int]:
+        """Helper to get the lookup key for the Environment."""
+        return (self.prompt_id, self.state_id)
+
     def evaluate(self):
         return self._runtime_cache
 
     def __cache__(self, activation: torch.Tensor):
         self._runtime_cache = activation
+
+    def set_cache(self, activation: torch.Tensor):
+        self.__cache__(activation)
 
     def __repr__(self):
         return f"Ref(P{self.prompt_id}.S{self.state_id}.T{self.token_idx}.L{self.layer_idx}.{self.module})"

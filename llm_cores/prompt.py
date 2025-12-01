@@ -3,7 +3,7 @@ Prompt storage classes for the REPL.
 """
 from typing import Optional, List, Any, Tuple
 from .state_node import StateNode
-from .computational_node import ComputationalNode, ActivationRef
+from .computational_node import ComputationalNode, ActivationRef, ConstantNode
 
 class Prompt:
     """
@@ -21,7 +21,6 @@ class Prompt:
         self.id = id
         self.tokens = tokens or []
         self.result: Any = None
-        self.tags: List[str] = []
 
         self.head: StateNode = StateNode(self.id, None)
     
@@ -42,10 +41,17 @@ class Prompt:
     def __str__(self) -> str:
         return self.text
     
-    def tag(self, *tags: str) -> "Prompt":
-        """Add tags to this prompt for later filtering."""
-        self.tags.extend(tags)
-        return self
+    def get_state_at(self, time_step: int) -> "StateNode":
+        """Traverses history backwards to find the state at a specific time step."""
+        curr = self.head
+        
+        if time_step > curr.time_step or time_step < 0:
+            raise ValueError(f"Requested invalid time step {time_step} (Current head is {curr.time_step})")
+
+        while curr.time_step > time_step:
+            curr = curr.parent
+
+        return curr
     
     def has_tag(self, tag: str) -> bool:
         """Check if prompt has a specific tag."""
@@ -110,9 +116,9 @@ class PromptList:
         self._prompts.append(prompt)
         return prompt
     
-    def __getitem__(self, key) -> Prompt:
+    def __getitem__(self, idx: int) -> Prompt:
         """Access prompts by index (supports negative indexing)."""
-        return self._prompts[key]
+        return self._prompts[idx]
     
     def __len__(self) -> int:
         return len(self._prompts)
