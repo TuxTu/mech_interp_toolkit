@@ -80,7 +80,9 @@ class LayerProxy:
         self.layer_idx = layer_idx 
         
     def __repr__(self) -> str:
-        return f"Token({self.token_idx}, {self.prompt.tokens[self.token_idx][1].replace('Ġ', ' ').replace('Ċ', '\n').replace('ĉ', '\t')!r})"
+        new_line = '\n'
+        tab = '\t'
+        return f"Token({self.token_idx}, {self.prompt.tokens[self.token_idx][1].replace('Ġ', ' ').replace('Ċ', new_line).replace('ĉ', tab)!r})"
 
     def __getitem__(self, module: str):
         return ActivationRef(self.prompt.id, self.prompt.current_state_id, self.token_idx, self.layer_idx, module)
