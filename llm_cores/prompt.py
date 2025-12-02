@@ -35,7 +35,9 @@ class Prompt:
 
     def __repr__(self) -> str:
         preview = self.text[:40] + "..." if len(self.text) > 40 else self.text
-        preview = preview.replace('\n', '\\n')
+        new_line = '\n'
+        tab = '\t'
+        preview = preview.replace(new_line, '\\n').replace(tab, '\\t')
         return f"Prompt[{self.id}]({preview!r})"
     
     def __str__(self) -> str:
@@ -68,7 +70,9 @@ class TokenProxy:
         self.index = index
         
     def __repr__(self) -> str:
-        return f"Token({self.index}, {self.prompt.tokens[self.index][1].replace('Ġ', ' ').replace('Ċ', '\n').replace('ĉ', '\t')!r})"
+        new_line = '\n'
+        tab = '\t'
+        return f"Token({self.index}, {self.prompt.tokens[self.index][1].replace('Ġ', ' ').replace('Ċ', new_line).replace('ĉ', tab)!r})"
 
     def __getitem__(self, layer_idx: int):
         return LayerProxy(self.prompt, self.index, layer_idx)
