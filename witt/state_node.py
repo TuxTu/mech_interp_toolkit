@@ -1,11 +1,13 @@
 from typing import Optional
 
+
 class StateNode:
     """
-    A node in the intervention tree. 
+    A node in the intervention tree.
     Represents the state of a specific prompt at a specific time.
     """
-    def __init__(self, prompt_index: int, parent: Optional['StateNode'] = None, patch_target=None, patch_value_node=None):
+    def __init__(self, prompt_index: int, parent: Optional['StateNode'] = None, 
+                 patch_target=None, patch_value_node=None):
         self.prompt_index = prompt_index
         self.parent = parent  # The previous version of THIS prompt
         self.patch_target = patch_target
@@ -23,3 +25,4 @@ class StateNode:
         if self.parent is None:
             return f"P{self.prompt_index}|t={self.time_step}:Clean"
         return f"P{self.prompt_index}:t={self.time_step}"
+

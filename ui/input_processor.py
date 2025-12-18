@@ -7,7 +7,7 @@ import shutil
 
 from .inspector import PromptInspector, LiveInspectDisplay
 from .screen_buffer import ScreenBuffer
-from .environment import ExecutionEnvironment
+from env import ExecutionEnvironment
 
 
 class InputProcessor:

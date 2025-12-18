@@ -1,10 +1,13 @@
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
 def tokenize(tokenizer, prompt):
     """
     Analyzes how a specific prompt is broken down into tokens.
-    Returns a list of (Token ID, String Representation) tuples.
+    
+    Args:
+        tokenizer: The tokenizer to use
+        prompt: The text to tokenize
+        
+    Returns:
+        A list of (Token ID, String Representation) tuples.
     """
     # 1. Get the numerical IDs
     input_ids = tokenizer.encode(prompt)
@@ -16,3 +19,4 @@ def tokenize(tokenizer, prompt):
     # Zip them together for easy inspection
     result = list(zip(input_ids, token_strs))
     return result
+

@@ -7,9 +7,9 @@ import torch
 from typing import List, Any, Dict, Set
 from collections import defaultdict
 
-from llm_cores import Prompt, PromptList, load_model, load_tokenizer, tokenize
-from llm_cores.state_node import StateNode
-from llm_cores.computational_node import ComputationalNode, ActivationRef, BinaryOpNode
+from witt import Prompt, PromptList, load_model, load_tokenizer, tokenize
+from witt.state_node import StateNode
+from witt.computational_node import ComputationalNode, ActivationRef, BinaryOpNode
 
 
 class HelpDisplay:

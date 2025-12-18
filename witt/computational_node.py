@@ -1,7 +1,7 @@
 import torch
-from typing import Dict, Any, Union, Tuple
+from typing import Dict, Any, Union, Tuple, Optional
 
-# 1. The Base Node for our Calculation Graph
+
 class ComputationalNode:
     """
     Represents any node in the lazy calculation graph.
@@ -33,22 +33,22 @@ class ComputationalNode:
 
     def evaluate(self) -> torch.Tensor:
         """
-        The trigger. strictly strictly forbidden to call this 
-        during definition time. It is only called by the Environment
-        inside a model hook.
+        The trigger. Strictly forbidden to call this during definition time.
+        It is only called by the Environment inside a model hook.
         """
         raise NotImplementedError()
 
-# Helper to allow syntax like: prompt[0] + 5 (wraps 5 into a Node)
+
 def _ensure_node(obj: Union['ComputationalNode', int, float, torch.Tensor]) -> 'ComputationalNode':
+    """Helper to allow syntax like: prompt[0] + 5 (wraps 5 into a Node)"""
     if isinstance(obj, ComputationalNode):
         return obj
     return ConstantNode(obj)
 
-# 2. A Reference to a specific activation (Leaf Node)
+
 class ActivationRef(ComputationalNode):
     """
-    A specific pointer to a future activation. 
+    A specific pointer to a future activation.
     It is a leaf node that waits for the cache to be filled.
     """
     def __init__(self, prompt_id: int, state_id: int, token_idx: int, layer_idx: int, module: str):
@@ -57,7 +57,6 @@ class ActivationRef(ComputationalNode):
         self.token_idx = token_idx
         self.layer_idx = layer_idx
         self.module = module
-
         self._runtime_cache: Optional[torch.Tensor] = None
 
     @property
@@ -77,7 +76,7 @@ class ActivationRef(ComputationalNode):
     def __repr__(self):
         return f"Ref(P{self.prompt_id}.S{self.state_id}.T{self.token_idx}.L{self.layer_idx}.{self.module})"
 
-# 3. A Constant (Leaf Node)
+
 class ConstantNode(ComputationalNode):
     """
     Represents a static number (scalar) in the graph.
@@ -95,7 +94,7 @@ class ConstantNode(ComputationalNode):
     def __repr__(self):
         return f"Const({self.value.item():.2f})"
 
-# 4. A Math Operation (Internal Node)
+
 class BinaryOpNode(ComputationalNode):
     """
     Stores the OPERATION, not the result.
@@ -107,7 +106,6 @@ class BinaryOpNode(ComputationalNode):
         self.right = right
         self.op_func = op_func
         self.op_symbol = op_symbol
-
         self._runtime_cache: Optional[torch.Tensor] = None
 
     def evaluate(self) -> torch.Tensor:
@@ -125,3 +123,4 @@ class BinaryOpNode(ComputationalNode):
         
     def __repr__(self):
         return f"({self.left} {self.op_symbol} {self.right})"
+

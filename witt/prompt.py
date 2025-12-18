@@ -1,9 +1,11 @@
 """
-Prompt storage classes for the REPL.
+Prompt storage classes for the witt library.
 """
 from typing import Optional, List, Any, Tuple
+
 from .state_node import StateNode
 from .computational_node import ComputationalNode, ActivationRef, ConstantNode
+
 
 class Prompt:
     """
@@ -21,7 +23,6 @@ class Prompt:
         self.id = id
         self.tokens = tokens or []
         self.result: Any = None
-
         self.head: StateNode = StateNode(self.id, None)
     
     @property
@@ -64,7 +65,10 @@ class Prompt:
             raise IndexError(f"Token index {token_idx} out of range [-{len(self.tokens)}, {len(self.tokens)})")
         return TokenProxy(self, token_idx % len(self.tokens))
 
+
 class TokenProxy:
+    """Proxy for accessing token-level operations on a prompt."""
+    
     def __init__(self, prompt: "Prompt", index: int):
         self.prompt = prompt
         self.index = index
@@ -77,7 +81,10 @@ class TokenProxy:
     def __getitem__(self, layer_idx: int):
         return LayerProxy(self.prompt, self.index, layer_idx)
 
+
 class LayerProxy:
+    """Proxy for accessing layer-level operations on a token."""
+    
     def __init__(self, prompt: "Prompt", token_idx: int, layer_idx: int):
         self.prompt = prompt
         self.token_idx = token_idx
@@ -102,16 +109,15 @@ class LayerProxy:
             prompt_index=self.prompt.id,
             parent=self.prompt.head,
             patch_target=(self.layer_idx, self.token_idx, module),
-            patch_value_node=value_node # Store the lazy math
+            patch_value_node=value_node  # Store the lazy math
         )
         
         # Advance the pointer
         self.prompt.head = new_state
 
+
 class PromptList:
-    """
-    A collection of prompts with filtering and lookup capabilities.
-    """
+    """A collection of prompts with filtering and lookup capabilities."""
     
     def __init__(self):
         self._prompts: List[Prompt] = []
