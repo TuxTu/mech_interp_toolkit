@@ -14,7 +14,7 @@ Wittgenstein provides an interactive environment for:
 ```bash
 # Clone the repository
 git clone https://github.com/TuxTu/Wittgenstein
-cd wittgenstein
+cd Wittgenstein
 
 # Install dependencies
 pip install torch transformers
