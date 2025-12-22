@@ -19,4 +19,3 @@ def tokenize(tokenizer, prompt):
     # Zip them together for easy inspection
     result = list(zip(input_ids, token_strs))
     return result
-

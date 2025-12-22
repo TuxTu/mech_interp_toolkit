@@ -31,7 +31,7 @@ def load_model(model_id, use_fp16=True):
     try:
         model = AutoModelForCausalLM.from_pretrained(
             model_id,
-            torch_dtype=dtype,
+            dtype=dtype,
             device_map=device,
             trust_remote_code=True,  # Needed for Qwen/custom architectures
             low_cpu_mem_usage=True   # Speeds up loading
@@ -57,4 +57,3 @@ def load_tokenizer(model_id):
     except Exception as e:
         print(f"\r[!] Error loading tokenizer: {e}")
         raise e
-
